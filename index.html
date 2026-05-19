@@ -193,6 +193,50 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 0 2px 8px rgba(6, 182, 212, 0.35);
 }
 
+/* Per-slider color overrides */
+/* Hot water (mass, fine, temp): orange */
+#waterMass, #waterMassFine, #waterTemp {
+  background: linear-gradient(90deg, #ffedd5, #fb923c);
+}
+#waterMass::-webkit-slider-thumb,
+#waterMassFine::-webkit-slider-thumb,
+#waterTemp::-webkit-slider-thumb {
+  background: #f97316;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.4);
+}
+#waterMass::-moz-range-thumb,
+#waterMassFine::-moz-range-thumb,
+#waterTemp::-moz-range-thumb {
+  background: #f97316;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.4);
+}
+
+/* Ice temperature: blue (cold) -> white (near 0°C), inverted */
+#iceTemp {
+  background: linear-gradient(90deg, #2563eb, #f8fafc);
+}
+#iceTemp::-webkit-slider-thumb {
+  background: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+#iceTemp::-moz-range-thumb {
+  background: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+
+/* Coffee strength: dark brown (strong) -> cream (weak), inverted */
+#strength {
+  background: linear-gradient(90deg, #5d3a1a, #fef3c7);
+}
+#strength::-webkit-slider-thumb {
+  background: #78350f;
+  box-shadow: 0 2px 8px rgba(120, 53, 15, 0.4);
+}
+#strength::-moz-range-thumb {
+  background: #78350f;
+  box-shadow: 0 2px 8px rgba(120, 53, 15, 0.4);
+}
+
 .slider-value {
   font-weight: 700;
   color: var(--accent-dark);
@@ -259,9 +303,21 @@ summary .en {
   border: 1px solid rgba(6, 182, 212, 0.18);
 }
 
+@property --temp-color-1 {
+  syntax: '<color>';
+  initial-value: #2563eb;
+  inherits: false;
+}
+@property --temp-color-2 {
+  syntax: '<color>';
+  initial-value: #1e40af;
+  inherits: false;
+}
+
 .metric.highlight {
-  background: linear-gradient(135deg, var(--accent), #0891b2);
+  background: linear-gradient(135deg, var(--temp-color-1), var(--temp-color-2));
   border-color: transparent;
+  transition: --temp-color-1 0.35s ease, --temp-color-2 0.35s ease;
 }
 
 .metric.highlight .metric-label,
@@ -338,6 +394,30 @@ summary .en {
   height: 10px;
   border-radius: 50%;
   background: var(--text-primary);
+}
+
+/* Fine-tune */
+.fine-tune {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.fine-tune-label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-bottom: 0.1rem;
+}
+
+.fine-tune-label .en {
+  color: var(--text-tertiary);
+  font-weight: 400;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.76rem;
 }
 
 /* Formula */
@@ -431,6 +511,44 @@ footer a {
 
 footer a:hover { text-decoration: underline; }
 
+/* Edge cases footnote */
+.edge-cases {
+  margin: 1.5rem 0 0;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border);
+}
+
+.edge-cases summary {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.edge-cases summary .en {
+  color: var(--text-tertiary);
+  margin-left: 0.2rem;
+}
+
+.edge-content {
+  margin-top: 1rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.edge-content p { margin: 0.75rem 0 0.5rem; }
+
+.edge-content .en {
+  display: block;
+  color: var(--text-tertiary);
+  font-size: 0.78rem;
+  margin-top: 0.15rem;
+}
+
+.edge-content .formula-block {
+  font-size: 0.9em;
+}
+
 /* KaTeX overrides */
 .katex-display {
   margin: 0 !important;
@@ -487,6 +605,19 @@ footer a:hover { text-decoration: underline; }
     <summary>詳細設定 <span class="en">/ Advanced</span></summary>
     <div class="advanced-content">
       <div class="slider-row">
+        <label class="slider-label" for="strength">
+          コーヒーの濃さ
+          <span class="en">Coffee strength</span>
+        </label>
+        <input type="range" id="strength" min="9" max="17" value="12" step="1">
+        <span class="slider-value">1 : <span id="strengthOut">12</span></span>
+      </div>
+      <p class="note" style="margin-top: 0.6rem; margin-bottom: 1.2rem;">
+        粉 1 に対する出来上がり量の比。Web のレシピを参考に、濃いめ <strong>1:10</strong> 〜 標準 <strong>1:12</strong> 〜 薄め <strong>1:16</strong> の範囲で調整できます。
+        <span class="en">Ratio of coffee grounds to total output. Adjustable from strong (1:10) to weak (1:16), based on common web recipes.</span>
+      </p>
+
+      <div class="slider-row">
         <label class="slider-label" for="iceTemp">
           氷の初期温度
           <span class="en">Initial ice temperature</span>
@@ -494,7 +625,7 @@ footer a:hover { text-decoration: underline; }
         <input type="range" id="iceTemp" min="-30" max="0" value="-18" step="1">
         <span class="slider-value"><span id="iceTempOut">-18</span> °C</span>
       </div>
-      <p class="note" style="margin-top: 0.8rem;">
+      <p class="note" style="margin-top: 0.6rem;">
         家庭用冷凍庫の氷は -18 °C 前後。製氷皿から出したばかりの場合はこちらを基準に。
         <span class="en">Household freezers typically run around -18 °C. Use this for ice straight from the freezer.</span>
       </p>
@@ -522,10 +653,10 @@ footer a:hover { text-decoration: underline; }
     </div>
     <div class="metric">
       <div class="metric-label">
-        残った氷
-        <span class="en">Ice remaining</span>
+        推奨する粉の量
+        <span class="en">Recommended coffee</span>
       </div>
-      <div class="metric-value"><span id="iceLeft">—</span><span class="unit">g</span></div>
+      <div class="metric-value"><span id="coffeeMass">—</span><span class="unit">g</span></div>
     </div>
   </div>
 </div>
@@ -538,20 +669,36 @@ footer a:hover { text-decoration: underline; }
     <div class="legend-item"><span class="legend-swatch" style="background:#14b8a6"></span>85 °C のお湯</div>
     <div class="legend-item"><span class="legend-swatch" style="background:#f59e0b"></span>95 °C のお湯</div>
     <div class="legend-item"><span class="legend-swatch" style="background:#ef4444"></span>100 °C のお湯</div>
-    <div class="legend-item"><span class="legend-dot"></span>現在の条件 <span style="color:var(--text-tertiary);">/ Current</span></div>
+    <div class="legend-item"><span class="legend-dot"></span>現在の条件 <span style="color:var(--text-tertiary);">/ Current settings</span></div>
   </div>
   <div class="chart-wrapper">
     <canvas id="tempChart" role="img" aria-label="Reference chart of final temperature versus total amount, with curves for different hot water temperatures."></canvas>
   </div>
-  <p class="note">
-    0 °C の水平な区間は氷が溶け残っている領域。そこを抜けると注いだ量に応じて温度が上がります。
-    <span class="en">The flat 0 °C section is where ice remains unmelted. Beyond it, temperature rises as more water is poured.</span>
-  </p>
+
+  <div class="fine-tune">
+    <div class="fine-tune-label">微調整 <span class="en">/ Fine-tune (1 g step)</span></div>
+    <div class="slider-row">
+      <label class="slider-label" for="iceMassFine">
+        氷の量
+        <span class="en">Ice mass</span>
+      </label>
+      <input type="range" id="iceMassFine" min="20" max="300" value="100" step="1">
+      <span class="slider-value"><span id="iceMassFineOut">100</span> g</span>
+    </div>
+    <div class="slider-row">
+      <label class="slider-label" for="waterMassFine">
+        注ぐお湯の量
+        <span class="en">Hot water poured</span>
+      </label>
+      <input type="range" id="waterMassFine" min="0" max="500" value="200" step="1">
+      <span class="slider-value"><span id="waterMassFineOut">200</span> g</span>
+    </div>
+  </div>
 </div>
 
 <!-- Formulas -->
 <div class="card formula-section">
-  <h2>計算式 <span class="en">/ Formulas</span></h2>
+  <h2>計算式 <span class="en">/ Formula</span></h2>
 
   <p>
     注ぐお湯が失う熱 = 氷が受け取る熱 (顕熱 + 融解熱 + 融け水の顕熱)
@@ -563,31 +710,11 @@ footer a:hover { text-decoration: underline; }
   </div>
 
   <p style="margin-top: 1.2rem;">
-    最終温度 $T_f$ について解くと、状況に応じて 3 つの場合があります。
-    <span class="en">Solving for $T_f$ gives three cases depending on the regime.</span>
+    最終温度 $T_f$ について解くと (氷が完全に融ける標準的なケース):
+    <span class="en">Solving for $T_f$ (standard case where all ice melts):</span>
   </p>
 
-  <div class="formula-block case">
-    <div class="case-label">
-      ケース 1: お湯が少なく氷を 0 °C まで温められない
-      <span class="en">Case 1: Not enough heat to even warm the ice to 0 °C</span>
-    </div>
-    $$T_f = \frac{m_w c_w T_h + m_{ice} c_{ice} T_{ice}}{m_w c_w + m_{ice} c_{ice}}$$
-  </div>
-
-  <div class="formula-block case">
-    <div class="case-label">
-      ケース 2: 氷が部分的に融ける
-      <span class="en">Case 2: Ice partially melts</span>
-    </div>
-    $$T_f = 0\,°C, \qquad m_{\text{melted}} = \frac{m_w c_w T_h - m_{ice} c_{ice} |T_{ice}|}{L_f}$$
-  </div>
-
-  <div class="formula-block case">
-    <div class="case-label">
-      ケース 3: 氷が完全に融ける
-      <span class="en">Case 3: All ice melts</span>
-    </div>
+  <div class="formula-block">
     $$T_f = \frac{m_w c_w T_h + m_{ice} c_{ice} T_{ice} - m_{ice} L_f}{(m_w + m_{ice}) \, c_w}$$
   </div>
 
@@ -611,6 +738,31 @@ footer a:hover { text-decoration: underline; }
     <span class="en">An idealized model — container heat capacity, air convection, and water absorbed by coffee grounds are neglected. Real measurements tend slightly higher than predicted.</span>
   </p>
 </div>
+
+<!-- Edge cases footnote -->
+<details class="edge-cases">
+  <summary>注: お湯が少ない場合の例外ケース <span class="en">/ Edge cases when hot water is scarce</span></summary>
+  <div class="edge-content">
+    <p>
+      上の式は氷が完全に融ける一般的な場合です。お湯の量が極端に少ないと、以下の 2 つの状況が起こります。
+      <span class="en">The formula above assumes all ice melts. When hot water is very scarce, two other situations occur.</span>
+    </p>
+    <p>
+      <strong>ケース A:</strong> お湯が氷を 0 °C まで温める熱量にも届かない場合 (現実にはほぼ起こりません):
+      <span class="en">Case A: When heat isn't enough to even warm ice to 0 °C (rare in practice):</span>
+    </p>
+    <div class="formula-block">
+      $$T_f = \frac{m_w c_w T_h + m_{ice} c_{ice} T_{ice}}{m_w c_w + m_{ice} c_{ice}}$$
+    </div>
+    <p>
+      <strong>ケース B:</strong> 氷が部分的に融ける場合 (グラフが 0 °C で水平になっている領域):
+      <span class="en">Case B: Ice partially melts (the flat 0 °C region on the chart):</span>
+    </p>
+    <div class="formula-block">
+      $$T_f = 0\,°C, \qquad m_{\text{melted}} = \frac{m_w c_w T_h - m_{ice} c_{ice} |T_{ice}|}{L_f}$$
+    </div>
+  </div>
+</details>
 
 <footer>
   ☕❄️ Made with curiosity
@@ -664,6 +816,41 @@ document.addEventListener('DOMContentLoaded', function() {
     const r = finalTemp(mw, mIce, Th, Tice);
     return { T: r.T, iceLeft: r.iceLeft, total: mw + (mIce - r.iceLeft) };
   }
+
+  // Temperature -> color gradient (cool up to ~30 °C, then warm)
+  // Each stop chosen for good contrast with white text.
+  const TEMP_STOPS = [
+    [-5,  [30, 58, 138]],    // very cold: blue-900
+    [5,   [29, 78, 216]],    // cold: blue-700
+    [15,  [3, 105, 161]],    // cool: sky-700
+    [25,  [14, 116, 144]],   // still cool: cyan-700
+    [30,  [15, 118, 110]],   // cool edge: teal-700
+    [35,  [180, 83, 9]],     // warming: amber-700
+    [50,  [234, 88, 12]],    // warm: orange-600
+    [70,  [220, 38, 38]],    // hot: red-600
+    [85,  [127, 29, 29]],    // very hot: red-900
+  ];
+
+  function tempColor(t) {
+    if (t <= TEMP_STOPS[0][0]) return TEMP_STOPS[0][1];
+    if (t >= TEMP_STOPS[TEMP_STOPS.length - 1][0]) return TEMP_STOPS[TEMP_STOPS.length - 1][1];
+    for (let i = 0; i < TEMP_STOPS.length - 1; i++) {
+      const [t1, c1] = TEMP_STOPS[i];
+      const [t2, c2] = TEMP_STOPS[i + 1];
+      if (t >= t1 && t <= t2) {
+        const f = (t - t1) / (t2 - t1);
+        return [
+          Math.round(c1[0] + (c2[0] - c1[0]) * f),
+          Math.round(c1[1] + (c2[1] - c1[1]) * f),
+          Math.round(c1[2] + (c2[2] - c1[2]) * f),
+        ];
+      }
+    }
+    return TEMP_STOPS[TEMP_STOPS.length - 1][1];
+  }
+
+  function rgbCss(rgb) { return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`; }
+  function darken(rgb, f) { return rgb.map(c => Math.round(c * f)); }
 
   const xs = [];
   for (let m = 0; m <= 500; m += 2) xs.push(m);
@@ -747,40 +934,71 @@ document.addEventListener('DOMContentLoaded', function() {
   const iceTempEl = document.getElementById('iceTemp');
   const waterEl = document.getElementById('waterMass');
   const tempEl = document.getElementById('waterTemp');
+  const strengthEl = document.getElementById('strength');
+  const iceFineEl = document.getElementById('iceMassFine');
+  const waterFineEl = document.getElementById('waterMassFine');
   const iceOut = document.getElementById('iceMassOut');
   const iceTempOut = document.getElementById('iceTempOut');
   const waterOut = document.getElementById('waterMassOut');
   const tempOut = document.getElementById('waterTempOut');
+  const strengthOut = document.getElementById('strengthOut');
+  const iceFineOut = document.getElementById('iceMassFineOut');
+  const waterFineOut = document.getElementById('waterMassFineOut');
   const finalTempOut = document.getElementById('finalTemp');
   const totalOut = document.getElementById('totalMass');
-  const iceLeftOut = document.getElementById('iceLeft');
+  const coffeeOut = document.getElementById('coffeeMass');
+  const highlightCard = document.querySelector('.metric.highlight');
 
   function update() {
     const mIce = parseFloat(iceEl.value);
     const Tice = parseFloat(iceTempEl.value);
     const mw = parseFloat(waterEl.value);
     const Th = parseFloat(tempEl.value);
+    const ratioN = parseFloat(strengthEl.value);
     iceOut.textContent = mIce;
     iceTempOut.textContent = Tice;
     waterOut.textContent = mw;
     tempOut.textContent = Th;
+    strengthOut.textContent = ratioN;
+    iceFineOut.textContent = mIce;
+    waterFineOut.textContent = mw;
+    // Sync fine sliders without triggering their input event
+    if (parseFloat(iceFineEl.value) !== mIce) iceFineEl.value = mIce;
+    if (parseFloat(waterFineEl.value) !== mw) waterFineEl.value = mw;
 
     const cur = compute(mw, mIce, Th, Tice);
     finalTempOut.textContent = cur.T.toFixed(1);
     totalOut.textContent = Math.round(cur.total);
-    iceLeftOut.textContent = cur.iceLeft.toFixed(1);
+    coffeeOut.textContent = (cur.total / ratioN).toFixed(1);
+
+    // Apply temperature-based gradient color
+    const tRgb = tempColor(cur.T);
+    const tDark = darken(tRgb, 0.78);
+    highlightCard.style.setProperty('--temp-color-1', rgbCss(tRgb));
+    highlightCard.style.setProperty('--temp-color-2', rgbCss(tDark));
 
     const newDatasets = buildDatasets(mIce, Tice);
     newDatasets.push(currentPointDataset(mw, mIce, Th, Tice));
     chart.data.datasets = newDatasets;
-    chart.options.scales.x.max = Math.max(600, 500 + mIce + 50);
+    chart.options.scales.x.max = cur.total + 100;
     chart.update('none');
   }
+
+  // Bidirectional sync: fine slider drives the main slider value
+  iceFineEl.addEventListener('input', () => {
+    iceEl.value = iceFineEl.value;
+    update();
+  });
+  waterFineEl.addEventListener('input', () => {
+    waterEl.value = waterFineEl.value;
+    update();
+  });
 
   iceEl.addEventListener('input', update);
   iceTempEl.addEventListener('input', update);
   waterEl.addEventListener('input', update);
   tempEl.addEventListener('input', update);
+  strengthEl.addEventListener('input', update);
   update();
 })();
 </script>
